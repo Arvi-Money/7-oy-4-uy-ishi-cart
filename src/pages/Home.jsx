@@ -1,25 +1,28 @@
 import { useEffect, useState } from "react"
 import data from '../data/data.json'
 import Card from '../components/Card'
+import { useDispatch } from "react-redux";
 
 function Home() {
 const [books, setBooks] = useState([]);
 const [local, setLocal] = useState([]);
-const [exist, isExist] = useState();
+const dispatch = useDispatch();
 
 useEffect(() => {
     setBooks(data);
     setLocal(getData);
 }, [])
 
-function handleBookmark(id) {
+function handleBookmark(data, exist) {
   let copied = JSON.parse(JSON.stringify(local));
   if (exist) {
     copied = copied.filter(el => {
       return !(el.imageLink == data.imageLink && el.title == data.title)
     })
+    dispatch({type: 'OCHIRISH'})
   }else {
     copied.push(data);
+    dispatch({type: 'QOSHISH'})
   }
   setLocal(copied);
   localStorage.setItem('books', JSON.stringify(copied));
@@ -32,6 +35,7 @@ function getData() {
   }
   return data;
 }
+console.log(books);
 
   return (
     <div className="d-flex justify-content-between container flex-wrap gap-3 mt-4">
@@ -43,7 +47,7 @@ function getData() {
               return el.imageLink == book.imageLink
             })
           }
-          return <Card exist={isExist} click={() => {handleBookmark}} key={index} data={book}></Card>
+          return <Card exist={isExist} click={handleBookmark} key={index} data={book}></Card>
         })
        }
     </div>
